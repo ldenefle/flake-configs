@@ -1,7 +1,7 @@
-{ ... }:
+{ inputs, ... }:
 
 {
-  imports = [ ./users ];
+  imports = [ ./users ./sops-nix.nix inputs.sops-nix.nixosModules.sops ];
 
   # Pin the state version
   system.stateVersion = "23.11";

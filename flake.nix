@@ -20,18 +20,21 @@
       [ "cache.armv7l.xyz-1:kBY/eGnBAYiqYfg0fy0inWhshUo+pGFM3Pj7kIkmlBk=" ];
   };
 
-  outputs = { self, nixpkgs, flake-utils, sops-nix, ... }@inputs:
+  outputs = { self, nixpkgs, flake-utils, ... }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        commonModules = [ sops-nix.nixosModules.sops ./common ];
+        commonModules = [ ./common ];
 
         mkSystem = system: extraModules:
           nixpkgs.lib.nixosSystem {
             inherit system;
             modules = commonModules ++ extraModules;
-            specialArgs = { inherit inputs; inherit system;};
+            specialArgs = {
+              inherit inputs;
+              inherit system;
+            };
           };
 
         mkSystemx86 = mkSystem "x86_64-linux";
