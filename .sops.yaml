@@ -1,0 +1,12 @@
+keys:
+  - &lucas: age19842x4gme2mqjcayd0w4mq3szxyv939n97gw854gtn6mhdr0rcksv4vm3u
+creation_rules:
+  - path_regex: ^hosts/sirocco/secrets.yaml$
+    key_groups:
+      - age:
+        - *lucas
+  - path_regex: secrets/secrets.yaml
+    key_groups:
+      - age:
+        - *lucas
+

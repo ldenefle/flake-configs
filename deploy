@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -euo pipefail
+
+USAGE="$(basename "$0") [-h] [-c configuration] [-s ssh] -- Deploy a nix configuration
+
+where:
+    -h  show this help text
+    -s  ssh information in the form of like user@host
+    -c  configuration to deploy "
+
+ARGS=":c:s:h"
+
+print_help() {
+    echo "${USAGE}"
+}
+
+fail() {
+    echo $1 >&2
+    exit 1
+}
+
+while getopts ${ARGS} option
+do case $option in
+    h) print_help; exit 0;;
+    c) CONFIG=$OPTARG;;
+    s) HOST=$OPTARG;;
+    ? ) fail "unknown option: $OPTARG";;
+    : ) fail "option missing argument: $OPTARG";;
+    * ) fail "bad state in getopts";;
+esac
+done
+shift "$((OPTIND-1))"
+
+nix build -L .#nixosConfigurations.x86_64-linux.${CONFIG}.config.system.build.toplevel
+nix copy --to ssh://${HOST} ./result
+ssh ${HOST} nix-env -p /nix/var/nix/profiles/system --set $(readlink ./result)
+ssh ${HOST} /nix/var/nix/profiles/system/bin/switch-to-configuration switch
+
