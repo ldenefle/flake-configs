@@ -19,6 +19,7 @@ in {
   sops.secrets.stuff_auth = (restrictPerms "caddy");
   sops.secrets.radicale_auth = (restrictPerms "radicale");
   sops.secrets.vaultwarden = (restrictPerms "vaultwarden");
+  sops.secrets.tailscale_auth = {};
 
   services.radicale = {
     enable = true;
@@ -31,6 +32,11 @@ in {
       };
       storage = { filesystem_folder = "/var/lib/radicale/collections"; };
     };
+  };
+
+  services.tailscale = {
+    enable = true;
+    authKeyFile = config.sops.secrets.tailscale_auth.path;
   };
 
   services.vaultwarden = {
