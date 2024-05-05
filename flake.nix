@@ -47,8 +47,8 @@
         };
 
         packages = {
-          images.odroid =
-            nixosConfigurations.odroid.config.system.build.sdImage;
+          odroid = nixosConfigurations.odroid.config.system.build.sdImage;
+          odroid2 = nixosConfigurations.odroid.config.system.build.sdImage;
         };
 
         devShells.default = pkgs.mkShell {
