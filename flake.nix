@@ -14,51 +14,57 @@
     };
   };
 
-  nixConfig = {
-    extra-substituters = [ "https://cache.armv7l.xyz" ];
-    extra-trusted-public-keys =
-      [ "cache.armv7l.xyz-1:kBY/eGnBAYiqYfg0fy0inWhshUo+pGFM3Pj7kIkmlBk=" ];
-  };
-
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
+    let
+      commonModules = [ ./common ];
 
-        commonModules = [ ./common ];
-
-        mkSystem = system: extraModules:
-          nixpkgs.lib.nixosSystem {
-            inherit system;
-            modules = commonModules ++ extraModules;
-            specialArgs = {
-              inherit inputs;
-              inherit system;
-            };
+      # Create a NixOS system configuration with our default customizations
+      # using the given package set and some extra modules.
+      mkSystem = pkgs: extraModules:
+        nixpkgs.lib.nixosSystem {
+          inherit (pkgs) system;
+          modules = commonModules ++ extraModules;
+          specialArgs = {
+            inherit inputs;
+            # Use overlayed pkgs
+            inherit pkgs;
+            # Use overlayed lib
+            inherit (pkgs) lib;
+            inherit (pkgs) system;
           };
-
-        mkSystemx86 = mkSystem "x86_64-linux";
-        mkSystemarmv7l = mkSystem "armv7l-linux";
-        inherit system;
-      in rec {
-        nixosConfigurations = {
-          odroid = mkSystemarmv7l [ ./hosts/odroid ];
-          sirocco = mkSystemx86 [ ./hosts/sirocco ];
         };
 
-        packages = {
-          odroid = nixosConfigurations.odroid.config.system.build.sdImage;
-          odroid2 = nixosConfigurations.odroid.config.system.build.sdImage;
+      # Apply our overlays to a nixpkgs for a certain system architecture
+      # and return the resulting package set.
+      mkPkgs = system:
+        import inputs.nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+          config.allowBroken = true;
+          # No overlays for now
+          # overlays = [
+          # ];
         };
 
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            sops
-            (writeScriptBin "format-all" ''
-              ${fd}/bin/fd --type f nix . -X ${nixfmt}/bin/nixfmt {}
-            '')
-          ];
-        };
-      });
+      # Get a couple handy aliases for properly customized package sets.
+      legacyPackages = {
+        x86_64-linux = mkPkgs "x86_64-linux";
+        aarch64-linux = mkPkgs "aarch64-linux";
+        armv7l-linux = mkPkgs "armv7l-linux";
+      };
+
+      mkSystemx86 = mkSystem legacyPackages.x86_64-linux;
+      mkSystemarmv7l = mkSystem legacyPackages.armv7l-linux;
+    in {
+      nixosConfigurations = {
+        odroid = mkSystemarmv7l [ ./hosts/odroid ];
+        sirocco = mkSystemx86 [ ./hosts/sirocco ];
+      };
+    } // (flake-utils.lib.eachDefaultSystem (system:
+      let pkgs = legacyPackages.${system};
+      in {
+        formatter = pkgs.nixfmt;
+        devShells.default = pkgs.mkShell { buildInputs = with pkgs; [ sops packer ]; };
+      }));
 }
 
