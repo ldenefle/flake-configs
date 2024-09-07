@@ -1,11 +1,13 @@
-{ config, inputs, system, modulesPath, ... }:
+{ config, inputs, lib, system, modulesPath, ... }:
 
 let
   blog = inputs.blog.packages."${system}".default;
   radicalePort = 5232;
   radicalePort' = builtins.toString radicalePort;
+  radicaleStorageDir = "/var/lib/radicale/collections";
   vaultwardenPort = 8222;
   vaultwardenPort' = builtins.toString vaultwardenPort;
+  vaultwardenBackupDir = "/var/backup/vaultwarden";
   restrictPerms = user: {
     mode = "0440";
     owner = config.users.users."${user}".name;
@@ -19,7 +21,8 @@ in {
   sops.secrets.stuff_auth = (restrictPerms "caddy");
   sops.secrets.radicale_auth = (restrictPerms "radicale");
   sops.secrets.vaultwarden = (restrictPerms "vaultwarden");
-  sops.secrets.tailscale_auth = {};
+  sops.secrets.tailscale_auth = { };
+  sops.secrets.tarsnap_auth = { };
 
   services.radicale = {
     enable = true;
@@ -30,7 +33,7 @@ in {
         htpasswd_filename = config.sops.secrets.radicale_auth.path;
         htpasswd_encryption = "md5";
       };
-      storage = { filesystem_folder = "/var/lib/radicale/collections"; };
+      storage = { filesystem_folder = radicaleStorageDir; };
     };
   };
 
@@ -41,6 +44,7 @@ in {
 
   services.vaultwarden = {
     enable = true;
+    backupDir = vaultwardenBackupDir;
     config = {
       ROCKET_ADDRESS = "::1"; # default to localhost
       ROCKET_PORT = vaultwardenPort;
@@ -48,6 +52,15 @@ in {
       DOMAIN = "https://pass.lunef.xyz";
     };
     environmentFile = config.sops.secrets.vaultwarden.path;
+  };
+
+  services.tarsnap = {
+    enable = true;
+    keyfile = config.sops.secrets.tarsnap_auth.path;
+    archives = {
+      vaultwarden = { directories = [ vaultwardenBackupDir ]; };
+      radicale = { directories = [ radicaleStorageDir ]; };
+    };
   };
 
   services.caddy = {
