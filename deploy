@@ -32,7 +32,7 @@ esac
 done
 shift "$((OPTIND-1))"
 
-nix build -L .#nixosConfigurations.x86_64-linux.${CONFIG}.config.system.build.toplevel
+nix build -L .#nixosConfigurations.${CONFIG}.config.system.build.toplevel
 nix copy --to ssh://${HOST} ./result
 ssh ${HOST} nix-env -p /nix/var/nix/profiles/system --set $(readlink ./result)
 ssh ${HOST} /nix/var/nix/profiles/system/bin/switch-to-configuration switch
