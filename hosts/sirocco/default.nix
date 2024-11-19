@@ -50,6 +50,7 @@ in {
       ROCKET_PORT = vaultwardenPort;
       SIGNUPS_ALLOWED = false;
       DOMAIN = "https://pass.lunef.xyz";
+      EXPERIMENTAL_CLIENT_FEATURE_FLAGS="ssh-key-vault-item,ssh-agent";
     };
     environmentFile = config.sops.secrets.vaultwarden.path;
   };
