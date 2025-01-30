@@ -50,7 +50,7 @@ in {
       ROCKET_PORT = vaultwardenPort;
       SIGNUPS_ALLOWED = false;
       DOMAIN = "https://pass.lunef.xyz";
-      EXPERIMENTAL_CLIENT_FEATURE_FLAGS="ssh-key-vault-item,ssh-agent";
+      EXPERIMENTAL_CLIENT_FEATURE_FLAGS = "ssh-key-vault-item,ssh-agent";
     };
     environmentFile = config.sops.secrets.vaultwarden.path;
   };
@@ -59,8 +59,14 @@ in {
     enable = true;
     keyfile = config.sops.secrets.tarsnap_auth.path;
     archives = {
-      vaultwarden = { directories = [ vaultwardenBackupDir ]; };
-      radicale = { directories = [ radicaleStorageDir ]; };
+      vaultwarden = {
+        directories = [ vaultwardenBackupDir ];
+        period = "weekly";
+      };
+      radicale = {
+        directories = [ radicaleStorageDir ];
+        period = "weekly";
+      };
     };
   };
 
