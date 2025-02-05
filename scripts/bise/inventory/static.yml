@@ -1,0 +1,6 @@
+all:
+  hosts:
+    bise:
+      ansible_port: 22
+      ansible_host: 139.96.30.224
+      ansible_user: lucas

@@ -1,0 +1,40 @@
+---
+- name: Install transmission-daemon
+  apt:
+    name: transmission-daemon
+    state: present
+    update_cache: yes
+
+- name: Enable transmission-daemon
+  service:
+    name: transmission-daemon
+    state: started
+    enabled: yes
+
+# - name: Set owner and group of download directory
+#   file:
+#     path: "{{ transmission_download_dir }}"
+#     state: directory
+#     owner: {{ transmission_user }}
+#     group: {{ transmission_group }}
+#     mode: 0775
+
+- name: Set owner and group of partial download directory
+  file:
+    path: "{{ transmission_incomplete_dir }}"
+    state: directory
+    owner: "{{ transmission_user }}"
+    group: "{{ transmission_group }}"
+    mode: 0775
+  when: transmission_incomplete_dir_enabled
+
+- name: Copy transmission config file to /etc/transmission-daemon/settings.json
+  template:
+    src: settings.json.j2
+    dest: /etc/transmission-daemon/settings.json
+    owner: "{{ transmission_user }}"
+    group: "{{ transmission_group }}"
+    mode: 0600
+  notify: reload and restart transmission-daemon
+
+- meta: flush_handlers

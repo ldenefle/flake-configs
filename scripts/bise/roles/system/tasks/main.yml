@@ -1,0 +1,50 @@
+---
+
+- name: Run the equivalent of "apt-get update" as a separate step
+  ansible.builtin.apt:
+    name: "*"
+    state: latest
+    update_cache: yes
+
+- name: Install vim
+  ansible.builtin.apt:
+    pkg:
+      - tmux
+      - vim
+      - htop
+
+- name: Mount up device by label
+  ansible.posix.mount:
+    path: /media
+    src: /dev/sda
+    fstype: ext4
+    state: mounted
+
+- name: Set the hostname
+  ansible.builtin.hostname:
+    name: bise
+
+# - name: Recursively change ownership of a directory
+#   ansible.builtin.file:
+#     path: /media
+#     state: directory
+#     recurse: yes
+#     owner: lucas
+#     group: disk
+
+- name: Ensure group "disk" exists
+  ansible.builtin.group:
+    name: disk
+    state: present
+
+- name: Setup navidrome user
+  ansible.builtin.user:
+    name: navidrome
+    groups: disk
+    system: true
+
+- name: Setup transmission user
+  ansible.builtin.user:
+    name: transmission
+    groups: disk
+    system: true

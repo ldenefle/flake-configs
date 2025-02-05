@@ -1,0 +1,44 @@
+---
+
+- name: set up bise
+  become: yes
+  roles: [system, navidrome, transmission, artis3n.tailscale]
+  vars:
+    tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
+
+    navidrome_version: 0.54.4
+    navidrome_user: navidrome
+    navidrome_group: navidrome
+
+    navidrome_install_location: /opt
+
+    navidrome_config_dir: /var/lib/navidrome
+    navidrome_config_file: navidrome.toml
+    navidrome_pid_file: /var/run/navidrome.pid
+    navidrome_config:
+      MusicFolder: /media/files
+      DataFolder: "{{ navidrome_config_dir }}"
+      AutoImportPlaylists: false
+      Spotify.ID: "{{ lookup('env', 'SPOTIFY_ID') }}"
+      Spotify.Secret: "{{ lookup('env', 'SPOTIFY_SECRET') }}"
+      LastFM.ApiKey: "{{ lookup('env', 'LASTFM_APIKEY') }}"
+      LastFM.Secret: "{{ lookup('env', 'LASTFM_SECRET') }}"
+
+    transmission_download_dir: /media/files
+    transmission_port_forwarding_enabled: true
+
+    transmission_rpc_authentication_required: false
+    transmission_rpc_host_whitelist_enabled: true
+    transmission_rpc_host_whitelist: "*"
+    transmission_rpc_user: "corduroy"
+    transmission_rpc_password: "{{ lookup('env', 'TRANSMISSION_RPC_PASSWORD')}}"
+    transmission_rpc_whitelist_enabled: true
+    transmission_rpc_whitelist: "139.96.30.*,127.0.0.1,192.168.*.*,100.*.*.*"
+
+    transmission_watch_dir: /media/torrents/
+    transmission_watch_dir_enabled: true
+
+  hosts: bise
+
+
+

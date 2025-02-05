@@ -1,0 +1,79 @@
+---
+navidrome_user: www-data
+navidrome_group: www-data
+
+navidrome_release_url: https://github.com/navidrome/navidrome/releases
+navidrome_temp_location: /tmp
+
+navidrome_install_location: /opt
+navidrome_bin_location: "{{ navidrome_install_location }}/navidrome"
+
+navidrome_config_dir: /var/lib/navidrome
+navidrome_config_file: navidrome.toml
+navidrome_config_file_location: "{{ navidrome_config_dir }}/{{ navidrome_config_file }}"
+navidrome_pid_file: /var/run/navidrome.pid
+
+navidrome_service_privatedevices:
+navidrome_service_protectsystem:
+navidrome_service_protecthome:
+
+navidrome_package_requirements:
+  - ffmpeg
+
+navidrome_config:
+  MusicFolder:   # Default: "./music"
+  DataFolder:   # Default: "./data"
+  LogLevel:   # Default: "info"
+  Address:   # Default: 0.0.0.0 and :: (all IPs)
+  BaseUrl:   # Default: Empty
+  Port:   # Default: 4533
+  AuthRequestLimit:   # Default: 5
+  AuthWindowLength:   # Default: "20s"
+  AutoImportPlaylists:   # Default: true
+  CoverArtPriority:   # Default: cover.*, folder.*, front.*, embedded, external
+  CoverJpegQuality:   # Default: 75
+  DefaultDownsamplingFormat:   # Default: opus
+  DefaultLanguage:   # Default: "en"
+  DefaultTheme:   # Default: Dark
+  EnableArtworkPrecache:   # Default: true
+  EnableCoverAnimation:   # Default: true
+  EnableDownloads:   # Default: true
+  EnableExternalServices:   # Default: true
+  EnableFavourites:   # Default: true
+  EnableGravatar:   # Default: false
+  EnableLogRedacting:   # Default: true
+  EnableMediaFileCoverArt:   # Default: true
+  EnableReplayGain:   # Default: true
+  EnableSharing:   # Default: false
+  EnableStarRating:   # Default: true
+  EnableTranscodingConfig:   # Default: false
+  EnableUserEditing:   # Default: true
+  FFmpegPath:   # Default: Empty (search in the PATH)
+  GATrackingID:   # Default: Empty (disabled)
+  IgnoredArticles:   # Default: "The El La Los Las Le Les Os As O A"
+  ImageCacheSize:   # Default: "100MB"
+  LastFM.ApiKey:   # Default: Navidrome project's shared ApiKey
+  LastFM.Enabled:   # Default: true
+  LastFM.Language:   # Default: "en"
+  LastFM.Secret:   # Default: Navidrome project's shared Secret
+  ListenBrainz.BaseURL:   # Default: https://api.listenbrainz.org/1/
+  ListenBrainz.Enabled:   # Default: true
+  MaxSidebarPlaylists:   # Default: 100
+  PasswordEncryptionKey:   # Default: (empty)
+  PlaylistsPath:   # Default: ".:**/**" (meaning MusicFolder and all its subfolders)
+  Prometheus.Enabled:   # Default: false
+  Prometheus.MetricsPath:   # Default: "/metrics"
+  RecentlyAddedByModTime:   # Default: false
+  ReverseProxyUserHeader:   # Default: "Remote-User"
+  ReverseProxyWhitelist:   # Default: (empty)
+  Scanner.Extractor:   # Default: "taglib"
+  Scanner.GenreSeparators:   # Default: ";/,"
+  ScanSchedule:   # Default: "@every 1m"
+  SearchFullString:   # Default: false
+  SessionTimeout:   # Default: "24h"
+  Spotify.ID:   # Default: (empty)
+  Spotify.Secret:   # Default: (empty)
+  SubsonicArtistParticipations:   # Default: false
+  TranscodingCacheSize:   # Default: "100MB"
+  UILoginBackgroundUrl:   # Default: random music image from Unsplash.com
+  UIWelcomeMessage:   # Default: (empty)
