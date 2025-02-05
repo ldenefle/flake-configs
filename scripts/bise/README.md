@@ -1,6 +1,6 @@
 # Bise provisioning
 
-## Usage
+## Installation
 
 ```
 python3 -m virtualenv --python="$(command -v python3)" .env &&
@@ -10,21 +10,23 @@ python3 -m virtualenv --python="$(command -v python3)" .env &&
     ansible-galaxy collection install -r requirements.yml
 ```
 
-Before running Ansible, dependencies needs to be installed on target `bise`
+## Usage
+
+A script is provided to generate a sd card image that will boot the latest armbian
 
 ```
-sudo su
-pacman-key --init
-pacman-key --populate
-pacman -Sy
-pacman -S sudo python base-devel glibc libffi openssl
-groupadd sudoers
-useradd -G sudoers,wheel -m lucas
-echo 'lucas ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/10-lucas
-su lucas
-mkdir -m 700 ~/.ssh; curl https://github.com/ldenefle.keys >> ~/.ssh/authorized_keys
-exit
-reboot
+./make-arch-arm32.sh /dev/<drive>
 ```
 
+The script should prompt for master password, it currently only fetches my public keys and should be modified if reused.
 
+The user setup script only happens after the first login which by default is `root` with password `1234`.
+
+An ansible playbook can be used to setup the system once the machine went through the user / ssh setup
+
+It's recommended to create a file `export.sh` with all secrets that should be passed to the build script as environment variable.
+
+```
+source export.sh
+ansible-playbook main.yml -i inventory --ask-become-pass
+```
