@@ -42,9 +42,3 @@
     name: navidrome
     groups: disk
     system: true
-
-- name: Setup transmission user
-  ansible.builtin.user:
-    name: transmission
-    groups: disk
-    system: true

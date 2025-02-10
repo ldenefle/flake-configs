@@ -1,0 +1,9 @@
+#{{ ansible_managed }}
+
+server.modules += ( "mod_fastcgi" )
+server.modules += ( "mod_scgi" )
+
+fastcgi.server = ( ".php" => ((
+                 "bin-path" => "/usr/bin/php-cgi",
+                 "socket" => "/tmp/php.socket"
+)))

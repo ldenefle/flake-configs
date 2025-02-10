@@ -2,7 +2,8 @@
 
 - name: set up bise
   become: yes
-  roles: [system, navidrome, transmission, artis3n.tailscale]
+  # roles: [system, navidrome, rtorrent, rutorrent, artis3n.tailscale]
+  roles: [ rtorrent, rutorrent ]
   vars:
     tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
 
@@ -24,19 +25,14 @@
       LastFM.ApiKey: "{{ lookup('env', 'LASTFM_APIKEY') }}"
       LastFM.Secret: "{{ lookup('env', 'LASTFM_SECRET') }}"
 
-    transmission_download_dir: /media/files
-    transmission_port_forwarding_enabled: true
-
-    transmission_rpc_authentication_required: false
-    transmission_rpc_host_whitelist_enabled: true
-    transmission_rpc_host_whitelist: "*"
-    transmission_rpc_user: "corduroy"
-    transmission_rpc_password: "{{ lookup('env', 'TRANSMISSION_RPC_PASSWORD')}}"
-    transmission_rpc_whitelist_enabled: true
-    transmission_rpc_whitelist: "139.96.30.*,127.0.0.1,192.168.*.*,100.*.*.*"
-
-    transmission_watch_dir: /media/torrents/
-    transmission_watch_dir_enabled: true
+    rtorrent_user: rtorrent
+    rtorrent_group: rtorrent
+    rtorrent_directory_download: /media/files/
+    rtorrent_directory_session: /var/lib/rtorrent/
+    rtorrent_directory_config: /etc/rtorrent/
+    rtorrent_directory_watch: /media/torrents/
+    rtorrent_other_settings:
+      - "scgi_port = 127.0.0.1:5000"
 
   hosts: bise
 

@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=rTorrent System Daemon
+After=network.target
+
+[Service]
+Type=simple
+User={{ rtorrent_user }}
+Group={{ rtorrent_group }}
+ExecStartPre=-/bin/rm -f {{ rtorrent_directory_session }}/rtorrent.lock
+ExecStart=/usr/bin/rtorrent -n -o import=/etc/rtorrent/rtorrent.rc
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

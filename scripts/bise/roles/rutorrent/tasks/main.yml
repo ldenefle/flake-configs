@@ -1,0 +1,44 @@
+---
+
+- name: Install rtorrent frontend
+  apt:
+    state: present
+    update_cache: no
+    pkg:
+      - lighttpd
+      - php-cgi
+      - php-fpm
+      - git
+
+- name: Add rutorrent configuration
+  template:
+    src: 90-rutorrent.conf.j2
+    dest: /etc/lighttpd/conf-available/90-rutorrent.conf
+    owner: root
+    group: root
+
+- name: Enables rutorrent configuration
+  ansible.builtin.file:
+    src: /etc/lighttpd/conf-available/90-rutorrent.conf
+    dest: /etc/lighttpd/conf-enabled/90-rutorrent.conf
+    owner: root
+    group: root
+    state: link
+  notify: restart lighttpd
+
+- name: Just ensuring the repo checkout exists
+  ansible.builtin.git:
+    repo: 'https://github.com/Novik/ruTorrent.git'
+    dest: /var/www/html/rutorrent
+    update: no
+
+- name: Change permission
+  ansible.builtin.file:
+    path: /var/www/html/rutorrent
+    owner: www-data
+    group: www-data
+    mode: 0775
+    state: directory
+    recurse: yes
+
+- meta: flush_handlers

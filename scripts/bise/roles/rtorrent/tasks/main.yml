@@ -1,0 +1,40 @@
+---
+
+- name: Install rtorrent
+  apt:
+    name: rtorrent
+    state: present
+    update_cache: yes
+
+- name: Setup transmission user
+  ansible.builtin.user:
+    name: rtorrent
+    groups: disk
+    system: true
+
+- name: Create session directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ rtorrent_user }}"
+    group: "{{ rtorrent_group }}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - "{{ rtorrent_directory_session }}"
+    - "{{ rtorrent_directory_config }}"
+
+- name: Copy rtorrent service file
+  template:
+    src: rtorrent.service.j2
+    dest: /lib/systemd/system/rtorrent.service
+
+- name: Copy rtorrent config file
+  template:
+    src: rtorrent.rc.j2
+    dest: "{{ rtorrent_directory_config }}/rtorrent.rc"
+    owner: "{{ rtorrent_user }}"
+    group: "{{ rtorrent_group }}"
+    mode: 0600
+  notify: restart rtorrent
+
+- meta: flush_handlers

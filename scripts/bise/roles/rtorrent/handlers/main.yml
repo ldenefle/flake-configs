@@ -1,0 +1,10 @@
+---
+- name: reload rtorrent
+  service: name=rtorrent state=reloaded
+
+- name: restart rtorrent
+  service: name=rtorrent state=restarted
+
+- name: reload and restart rtorrent
+  service: name=rtorrent state=reloaded
+  notify: restart rtorrent
