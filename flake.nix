@@ -59,6 +59,7 @@
       nixosConfigurations = {
         odroid = mkSystemarmv7l [ ./hosts/odroid ];
         sirocco = mkSystemx86 [ ./hosts/sirocco ];
+        tramontane = mkSystemx86 [ ./hosts/tramontane ];
       };
     } // (flake-utils.lib.eachDefaultSystem (system:
       let pkgs = legacyPackages.${system};

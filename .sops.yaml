@@ -7,3 +7,7 @@ creation_rules:
       - age:
         - *lucas
         - *sirocco
+  - path_regex: ^hosts/tramontane/secrets.yaml$
+    key_groups:
+      - age:
+        - *lucas
