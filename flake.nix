@@ -1,7 +1,8 @@
 {
   description = "Build image";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/81d54c130da1562af75534e8d3abb75df9bd7669";
+    nixpkgs.url =
+      "github:NixOS/nixpkgs/81d54c130da1562af75534e8d3abb75df9bd7669";
     flake-utils.url = "github:numtide/flake-utils";
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -17,13 +18,14 @@
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
     let
       commonModules = [ ./common ];
+      customModules = [ ./modules ];
 
       # Create a NixOS system configuration with our default customizations
       # using the given package set and some extra modules.
       mkSystem = pkgs: extraModules:
         nixpkgs.lib.nixosSystem {
           inherit (pkgs) system;
-          modules = commonModules ++ extraModules;
+          modules = commonModules ++ customModules ++ extraModules;
           specialArgs = {
             inherit inputs;
             # Use overlayed pkgs
@@ -59,12 +61,14 @@
       nixosConfigurations = {
         odroid = mkSystemarmv7l [ ./hosts/odroid ];
         sirocco = mkSystemx86 [ ./hosts/sirocco ];
+        tramontane = mkSystemx86 [ ./hosts/tramontane ];
       };
     } // (flake-utils.lib.eachDefaultSystem (system:
       let pkgs = legacyPackages.${system};
       in {
         formatter = pkgs.nixfmt;
-        devShells.default = pkgs.mkShell { buildInputs = with pkgs; [ sops packer ]; };
+        devShells.default =
+          pkgs.mkShell { buildInputs = with pkgs; [ sops nixos-rebuild ]; };
       }));
 }
 
