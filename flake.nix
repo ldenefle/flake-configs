@@ -65,7 +65,7 @@
       let pkgs = legacyPackages.${system};
       in {
         formatter = pkgs.nixfmt;
-        devShells.default = pkgs.mkShell { buildInputs = with pkgs; [ sops packer ]; };
+        devShells.default = pkgs.mkShell { buildInputs = with pkgs; [ sops nixos-rebuild ]; };
       }));
 }
 
