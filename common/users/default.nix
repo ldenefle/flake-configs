@@ -14,10 +14,10 @@ in {
 
     home = "/home/lucas";
 
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "disk" ];
     openssh.authorizedKeys.keys = keys;
 
-    packages = with pkgs; [ htop fd silver-searcher ];
+    packages = with pkgs; [ htop fd silver-searcher vim ];
   };
 
   # Use my SSH keys for logging in as root.

@@ -30,3 +30,17 @@ It's recommended to create a file `export.sh` with all secrets that should be pa
 source export.sh
 ansible-playbook main.yml -i inventory --ask-become-pass
 ```
+
+## Serial port pinout 
+
+
+Supports 1V8 only per documentation.
+
+```
+ -------
+|  VCC  \
+|  TX   |
+|  RX   |
+|  GND  |
+|_______|
+```

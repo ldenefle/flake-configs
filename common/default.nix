@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 
 {
   imports = [ ./users ./sops-nix.nix inputs.sops-nix.nixosModules.sops ];
@@ -25,7 +25,7 @@
   # its dnssec support because it is kinda broken in
   # surprising ways.
   services.resolved = {
-    enable = true;
+    enable = lib.mkDefault true;
     dnssec = "false";
   };
 }

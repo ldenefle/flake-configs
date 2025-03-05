@@ -7,3 +7,15 @@ fastcgi.server = ( ".php" => ((
                  "bin-path" => "/usr/bin/php-cgi",
                  "socket" => "/tmp/php.socket"
 )))
+
+# Prevent non-tailscale or non-local to access rutorrent
+$HTTP["url"] =~ "^/rutorrent/" {
+    $HTTP["remoteip"] == "100.64.0.0/10" {
+    }
+    else $HTTP["remoteip"] == "192.168.0.0/16" {
+    }
+    else {
+        url.access-deny = ( "" )
+    }
+}
+

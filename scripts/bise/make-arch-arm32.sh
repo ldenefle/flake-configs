@@ -16,7 +16,7 @@ read -p "Enter root password: " ROOT_PASSWORD
 
 pushd $(mktemp -d)
 sudo dd if=/dev/zero of=${DRIVE} bs=1M count=8
-wget https://dl.armbian.com/odroidxu4/Bookworm_current_minimal -O armbian.img.xz
+wget https://k-space.ee.armbian.com/archive/odroidxu4/archive/Armbian_24.11.1_Odroidxu4_bookworm_current_6.6.60_minimal.img.xz -O armbian.img.xz
 xz --decompress armbian.img.xz
 mkdir root
 
