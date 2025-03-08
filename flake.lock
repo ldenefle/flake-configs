@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1715016114,
-        "narHash": "sha256-+pMH9VZNx7LjvoXBbq59aUYPftaEpwyaXHAB5h0qjKY=",
+        "lastModified": 1741435156,
+        "narHash": "sha256-8mhBLIJA3iI4inN7jjxxLba6w0IzeGgUNRi6itbAnsI=",
         "owner": "ldenefle",
         "repo": "blog.lunef.xyz",
-        "rev": "c291d139df08f0c26254e852c8ae56f92a039bf4",
+        "rev": "0ce53cf12cc47f34a29c618971173741f0becc80",
         "type": "github"
       },
       "original": {
