@@ -5,7 +5,7 @@ let
   dnsPort = 53;
   blockyHttpPort = 4000;
 in {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [ ./hardware-configuration.nix ./users.nix ];
 
   sops.secrets.tailscale_auth = { };
   sops.secrets.kavita_token_key = { };
