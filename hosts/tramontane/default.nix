@@ -103,12 +103,12 @@ in {
     tokenKeyFile = config.sops.secrets.kavita_token_key.path;
   };
 
-  # services.immich = {
-  #   enable = true;
-  #   port = immichPort;
-  # };
+  services.immich = {
+    enable = true;
+    port = immichPort;
+  };
 
-  # users.users.immich.extraGroups = [ "video" "render" "disk" ];
+  users.users.immich.extraGroups = [ "video" "render" "disk" ];
 
   services.caddy = {
     enable = true;
@@ -133,5 +133,6 @@ in {
     lm_sensors
     intel-gpu-tools
     zfs
+    immich
   ];
 }
