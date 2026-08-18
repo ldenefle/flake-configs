@@ -1,0 +1,24 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Radio stream (liquidsoap -> icecast)
+After=icecast2.service navidrome.service
+Requires=icecast2.service
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User={{ radio_user }}
+Group={{ radio_group }}
+Type=simple
+# Ensure the playlist exists before starting
+ExecStartPre=/usr/local/bin/radio-playlist-refresh.sh
+ExecStart=/usr/bin/liquidsoap /etc/liquidsoap/radio.liq
+Restart=on-failure
+RestartSec=10s
+
+NoNewPrivileges=yes
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=yes
+ReadWritePaths={{ radio_playlist_dir }} /var/log/liquidsoap

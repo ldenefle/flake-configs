@@ -1,0 +1,48 @@
+{# {{ ansible_managed }} #}
+<icecast>
+    <location>{{ radio_icecast_hostname }}</location>
+    <admin>icemaster@{{ radio_icecast_hostname }}</admin>
+
+    <limits>
+        <clients>100</clients>
+        <sources>{{ radio_outputs | length }}</sources>
+        <queue-size>524288</queue-size>
+        <client-timeout>30</client-timeout>
+        <header-timeout>15</header-timeout>
+        <source-timeout>10</source-timeout>
+        <burst-on-connect>1</burst-on-connect>
+        <burst-size>65536</burst-size>
+    </limits>
+
+    <authentication>
+        <source-password>{{ radio_icecast_source_password | e }}</source-password>
+        <relay-password>{{ radio_icecast_relay_password | e }}</relay-password>
+        <admin-user>{{ radio_icecast_admin_user | e }}</admin-user>
+        <admin-password>{{ radio_icecast_admin_password | e }}</admin-password>
+    </authentication>
+
+    <hostname>{{ radio_icecast_hostname }}</hostname>
+
+    <listen-socket>
+        <port>{{ radio_icecast_port }}</port>
+        <bind-address>{{ radio_icecast_bind_address }}</bind-address>
+    </listen-socket>
+
+    <paths>
+        <basedir>/usr/share/icecast2</basedir>
+        <logdir>/var/log/icecast2</logdir>
+        <webroot>/usr/share/icecast2/web</webroot>
+        <adminroot>/usr/share/icecast2/admin</adminroot>
+        <pidfile>/var/run/icecast2/icecast2.pid</pidfile>
+    </paths>
+
+    <logging>
+        <accesslog>access.log</accesslog>
+        <errorlog>error.log</errorlog>
+        <loglevel>3</loglevel>
+    </logging>
+
+    <security>
+        <chroot>0</chroot>
+    </security>
+</icecast>

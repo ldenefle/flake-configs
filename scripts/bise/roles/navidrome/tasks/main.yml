@@ -18,15 +18,24 @@
     - "{{ navidrome_install_location }}"
     - "{{ navidrome_config_dir }}"
 
+- name: Check installed navidrome version
+  ansible.builtin.command:
+    cmd: "{{ navidrome_bin_location }} --version"
+  register: navidrome_installed_version
+  changed_when: false
+  failed_when: false
+
 - name: Construct asset URL
   ansible.builtin.set_fact:
     navidrome_asset_url: "{{ navidrome_release_url }}/download/v{{ navidrome_version }}/navidrome_{{ navidrome_version }}_{{ ansible_system }}_armv7.tar.gz"
+  when: navidrome_version not in (navidrome_installed_version.stdout | default(''))
 
 - name: Download latest release
   ansible.builtin.get_url:
     url: "{{ navidrome_asset_url }}"
     dest: "{{ navidrome_temp_location }}/navidrome_{{ navidrome_version }}_{{ ansible_system }}_armv7.tar.gz"
     mode: '0400'
+  when: navidrome_asset_url is defined
 
 - name: Extract latest release
   ansible.builtin.unarchive:
@@ -36,7 +45,7 @@
     owner: "{{ navidrome_user }}"
     group: "{{ navidrome_group }}"
     mode: '0755'
-    creates: "{{ navidrome_install_location }}/navidrome"
+  when: navidrome_asset_url is defined
   notify:
     - Restart_navidrome
 

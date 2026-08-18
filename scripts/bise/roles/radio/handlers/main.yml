@@ -1,0 +1,14 @@
+---
+- name: Reload_systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart_icecast2
+  ansible.builtin.systemd:
+    name: icecast2
+    state: restarted
+
+- name: Restart_radio
+  ansible.builtin.systemd:
+    name: radio
+    state: restarted

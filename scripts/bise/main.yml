@@ -2,12 +2,17 @@
 
 - name: set up bise
   become: yes
-  # roles: [system, navidrome, rtorrent, rutorrent, artis3n.tailscale]
-  roles: [ rtorrent, rutorrent ]
+  roles:
+    - system
+    - navidrome
+    - rtorrent
+    - rutorrent
+    - { role: radio, tags: [radio] }
+  # roles: [ rtorrent, rutorrent ]
   vars:
     tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
 
-    navidrome_version: 0.54.4
+    navidrome_version: 0.58.0
     navidrome_user: navidrome
     navidrome_group: navidrome
 
@@ -33,6 +38,13 @@
     rtorrent_directory_watch: /media/torrents/
     rtorrent_other_settings:
       - "scgi_port = 127.0.0.1:5000"
+
+    radio_icecast_source_password: "{{ lookup('env', 'ICECAST_SOURCE_PASSWORD') }}"
+    radio_icecast_relay_password: "{{ lookup('env', 'ICECAST_RELAY_PASSWORD') }}"
+    radio_icecast_admin_password: "{{ lookup('env', 'ICECAST_ADMIN_PASSWORD') }}"
+    radio_icecast_hostname: "radio.lunef.xyz"
+    radio_playlists:
+      - "radio"
 
   hosts: bise
 

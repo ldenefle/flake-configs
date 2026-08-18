@@ -1,0 +1,30 @@
+# {{ ansible_managed }}
+
+settings.log.file.path.set("/var/log/liquidsoap/radio.log")
+settings.log.level.set(3)
+
+radio = playlist(
+  mode="randomize",
+  reload_mode="watch",
+  "{{ radio_playlist_dir }}/{{ radio_playlist_file }}"
+)
+
+radio = fallback(track_sensitive=false, [radio, blank()])
+
+{% for output in radio_outputs %}
+output.icecast(
+  {% if output.format == 'shine' %}
+  %shine(bitrate={{ output.bitrate }}),
+  {% elif output.format == 'mp3' %}
+  %mp3(bitrate={{ output.bitrate }}),
+  {% elif output.format == 'aac' %}
+  %ffmpeg(format="adts", %audio(codec="aac", b="{{ output.bitrate }}k")),
+  {% endif %}
+  host="127.0.0.1", port={{ radio_icecast_port }},
+  password="{{ radio_icecast_source_password }}",
+  mount="{{ output.mount }}",
+  name="{{ radio_stream_name }}", description="{{ radio_stream_description }}",
+  radio
+)
+
+{% endfor %}

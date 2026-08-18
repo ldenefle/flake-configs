@@ -1,0 +1,28 @@
+---
+radio_user: "{{ navidrome_user }}"
+radio_group: "{{ navidrome_group }}"
+
+radio_playlist_dir: /var/lib/radio
+radio_playlist_file: radio.m3u
+radio_navidrome_bin: "{{ navidrome_bin_location }}"
+radio_navidrome_config: "{{ navidrome_config_dir }}/{{ navidrome_config_file }}"
+
+radio_playlists:
+  - "radio"
+
+radio_icecast_port: 8000
+radio_icecast_hostname: localhost
+radio_icecast_bind_address: 0.0.0.0
+radio_icecast_source_password: changeme
+radio_icecast_relay_password: changeme
+radio_icecast_admin_user: admin
+radio_icecast_admin_password: changeme
+
+radio_stream_name: Radio
+radio_stream_description: Radio stream
+
+radio_outputs:
+  - { format: shine, bitrate: 192, mount: /radio-192.mp3 }
+  - { format: shine, bitrate: 256, mount: /radio-256.mp3 }
+
+radio_playlist_refresh_interval: 1h

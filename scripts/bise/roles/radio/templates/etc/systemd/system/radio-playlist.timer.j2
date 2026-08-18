@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Periodically refresh radio playlist from Navidrome
+
+[Timer]
+OnBootSec=60s
+OnUnitActiveSec={{ radio_playlist_refresh_interval }}
+
+[Install]
+WantedBy=timers.target

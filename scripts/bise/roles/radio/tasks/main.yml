@@ -1,0 +1,119 @@
+---
+- name: Install icecast2 and liquidsoap
+  ansible.builtin.apt:
+    name:
+      - icecast2
+      - liquidsoap
+    state: present
+    update_cache: yes
+
+- name: Ensure playlist directory
+  ansible.builtin.file:
+    path: "{{ radio_playlist_dir }}"
+    owner: "{{ radio_user }}"
+    group: "{{ radio_group }}"
+    state: directory
+    mode: '0755'
+
+- name: Ensure liquidsoap log directory
+  ansible.builtin.file:
+    path: /var/log/liquidsoap
+    owner: "{{ radio_user }}"
+    group: "{{ radio_group }}"
+    state: directory
+    mode: '0755'
+
+- name: Configure icecast2
+  ansible.builtin.template:
+    src: etc/icecast2/icecast.xml.j2
+    dest: /etc/icecast2/icecast.xml
+    owner: icecast2
+    group: icecast
+    mode: '0640'
+  notify:
+    - Restart_icecast2
+
+- name: Enable icecast2 in /etc/default
+  ansible.builtin.template:
+    src: etc/default/icecast2.j2
+    dest: /etc/default/icecast2
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart_icecast2
+
+- name: Install playlist refresh script
+  ansible.builtin.template:
+    src: usr/local/bin/radio-playlist-refresh.sh.j2
+    dest: /usr/local/bin/radio-playlist-refresh.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Ensure liquidsoap config directory
+  ansible.builtin.file:
+    path: /etc/liquidsoap
+    state: directory
+    mode: '0755'
+
+- name: Configure liquidsoap script
+  ansible.builtin.template:
+    src: etc/liquidsoap/radio.liq.j2
+    dest: /etc/liquidsoap/radio.liq
+    owner: "{{ radio_user }}"
+    group: "{{ radio_group }}"
+    mode: '0644'
+  notify:
+    - Restart_radio
+
+- name: Configure radio systemd service
+  ansible.builtin.template:
+    src: etc/systemd/system/radio.service.j2
+    dest: /etc/systemd/system/radio.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload_systemd
+    - Restart_radio
+
+- name: Configure playlist refresh systemd service
+  ansible.builtin.template:
+    src: etc/systemd/system/radio-playlist.service.j2
+    dest: /etc/systemd/system/radio-playlist.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload_systemd
+
+- name: Configure playlist refresh systemd timer
+  ansible.builtin.template:
+    src: etc/systemd/system/radio-playlist.timer.j2
+    dest: /etc/systemd/system/radio-playlist.timer
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload_systemd
+
+- name: Enable and start icecast2
+  ansible.builtin.systemd:
+    name: icecast2
+    enabled: true
+    state: started
+
+- name: Enable and start radio service
+  ansible.builtin.systemd:
+    name: radio
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Enable and start playlist refresh timer
+  ansible.builtin.systemd:
+    name: radio-playlist.timer
+    enabled: true
+    state: started
+    daemon_reload: true

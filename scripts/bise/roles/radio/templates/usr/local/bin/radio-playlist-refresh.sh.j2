@@ -1,0 +1,16 @@
+#!/bin/bash
+# {{ ansible_managed }}
+set -euo pipefail
+
+PLAYLIST_FILE="{{ radio_playlist_dir }}/{{ radio_playlist_file }}"
+TEMP_FILE="{{ radio_playlist_dir }}/{{ radio_playlist_file }}.tmp"
+
+printf '#EXTM3U\n' > "$TEMP_FILE"
+
+{% for pl in radio_playlists %}
+"{{ radio_navidrome_bin }}" --configfile "{{ radio_navidrome_config }}" pls -p "{{ pl }}" 2>&1 | \
+  grep -E '^(#|/)' >> "$TEMP_FILE" || \
+  echo "Warning: failed to fetch playlist '{{ pl }}'" >&2
+{% endfor %}
+
+mv "$TEMP_FILE" "$PLAYLIST_FILE"

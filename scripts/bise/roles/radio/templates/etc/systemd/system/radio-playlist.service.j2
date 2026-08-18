@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Refresh radio playlist from Navidrome
+After=navidrome.service
+Requires=navidrome.service
+
+[Service]
+Type=oneshot
+User={{ radio_user }}
+Group={{ radio_group }}
+ExecStart=/usr/local/bin/radio-playlist-refresh.sh

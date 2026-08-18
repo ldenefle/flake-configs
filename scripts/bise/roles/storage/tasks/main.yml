@@ -1,0 +1,9 @@
+---
+
+- name: Mount up device by label
+  ansible.posix.mount:
+    path: /media
+    src: UUID=404a9701-3782-4e43-9a62-028db0c4bb6f
+    options: defaults
+    fstype: ext4
+    state: present

@@ -1,0 +1,20 @@
+---
+
+- name: create converge user with password converge
+  user: name=lucas shell=/bin/bash groups=sudo
+  become: yes
+
+- name: Allow the `lucas` user to run `sudo pacman` without a password
+  become: yes
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/10-lucas
+    line: 'lucas ALL=(ALL) NOPASSWD: ALL'
+    create: yes
+    mode: 0644
+    validate: 'visudo -cf %s'
+
+- name: insert github authorized keys for lucas
+  ansible.posix.authorized_key:
+      user: converge
+      key: "{{ lookup('url', 'https://github.com/ldenefle.keys', split_lines=False) }}"
+  become: yes

@@ -3,11 +3,8 @@
 ## Installation
 
 ```
-python3 -m virtualenv --python="$(command -v python3)" .env &&
-    source .env/bin/activate &&
-    python3 -m pip install -U pip virtualenv &&
-    python3 -m pip install -r requirements.txt &&
-    ansible-galaxy collection install -r requirements.yml
+uv sync
+uv run ansible-galaxy collection install -r requirements.yml
 ```
 
 ## Usage
@@ -28,7 +25,7 @@ It's recommended to create a file `export.sh` with all secrets that should be pa
 
 ```
 source export.sh
-ansible-playbook main.yml -i inventory --ask-become-pass
+uv run ansible-playbook main.yml -i inventory --ask-become-pass
 ```
 
 ## Serial port pinout 
