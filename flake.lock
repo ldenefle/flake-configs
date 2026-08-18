@@ -8,16 +8,36 @@
         ]
       },
       "locked": {
-        "lastModified": 1741435156,
-        "narHash": "sha256-8mhBLIJA3iI4inN7jjxxLba6w0IzeGgUNRi6itbAnsI=",
+        "lastModified": 1751093924,
+        "narHash": "sha256-wCMeK53fuGjqqpSjKBl7yWZ8Du3Rkkj2bOUXwf4j9hw=",
         "owner": "ldenefle",
         "repo": "blog.lunef.xyz",
-        "rev": "0ce53cf12cc47f34a29c618971173741f0becc80",
+        "rev": "d3820834833ed2feabb4d96c9b4ed7a4ab2546f5",
         "type": "github"
       },
       "original": {
         "owner": "ldenefle",
         "repo": "blog.lunef.xyz",
+        "type": "github"
+      }
+    },
+    "disko": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781152676,
+        "narHash": "sha256-RxWs5ND31KzTG7wvMM+PMfUjyNpmIEr999lqNARaM5o=",
+        "owner": "nix-community",
+        "repo": "disko",
+        "rev": "ff8702b4de27f72b4c78573dfb89ec74e36abdf1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "disko",
         "type": "github"
       }
     },
@@ -59,17 +79,17 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1731932018,
-        "narHash": "sha256-zN253mOBPQ34an28Q9jRD/r07c/l9lYvQZRMkjbSetM=",
+        "lastModified": 1780902259,
+        "narHash": "sha256-q8yYEC5f1mFlQO9RGna4LTc9QrcvWunX6FYp83munkQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "81d54c130da1562af75534e8d3abb75df9bd7669",
+        "rev": "bd0ff2d3eac24699c3664d5966b9ef36f388e2ca",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
+        "ref": "nixos-26.05",
         "repo": "nixpkgs",
-        "rev": "81d54c130da1562af75534e8d3abb75df9bd7669",
         "type": "github"
       }
     },
@@ -92,6 +112,7 @@
     "root": {
       "inputs": {
         "blog": "blog",
+        "disko": "disko",
         "flake-utils": "flake-utils_2",
         "nixpkgs": "nixpkgs",
         "sops-nix": "sops-nix"

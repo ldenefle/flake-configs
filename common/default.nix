@@ -14,6 +14,14 @@
   # add up.
   nix.settings.auto-optimise-store = true;
 
+  # Automatically garbage collect the Nix store weekly,
+  # removing generations older than 14 days.
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
+
   #  Limit the systemd journal to 100 MB of disk or the
   # last 7 days of logs, whichever happens first.
   services.journald.extraConfig = ''

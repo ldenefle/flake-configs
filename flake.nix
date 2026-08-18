@@ -2,8 +2,10 @@
   description = "Build image";
   inputs = {
     nixpkgs.url =
-      "github:NixOS/nixpkgs/81d54c130da1562af75534e8d3abb75df9bd7669";
+      "github:NixOS/nixpkgs/nixos-26.05";
+
     flake-utils.url = "github:numtide/flake-utils";
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -13,19 +15,23 @@
       url = "github:ldenefle/blog.lunef.xyz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
     let
       commonModules = [ ./common ];
-      customModules = [ ./modules ];
 
       # Create a NixOS system configuration with our default customizations
       # using the given package set and some extra modules.
       mkSystem = pkgs: extraModules:
         nixpkgs.lib.nixosSystem {
           inherit (pkgs) system;
-          modules = commonModules ++ customModules ++ extraModules;
+          modules = commonModules  ++ extraModules;
           specialArgs = {
             inherit inputs;
             # Use overlayed pkgs
@@ -43,9 +49,9 @@
           inherit system;
           config.allowUnfree = true;
           config.allowBroken = true;
-          # No overlays for now
-          # overlays = [
-          # ];
+          overlays = [
+            (import ./overlays/ezstream.nix)
+          ];
         };
 
       # Get a couple handy aliases for properly customized package sets.
@@ -60,7 +66,10 @@
     in {
       nixosConfigurations = {
         odroid = mkSystemarmv7l [ ./hosts/odroid ];
-        sirocco = mkSystemx86 [ ./hosts/sirocco ];
+        sirocco = mkSystemx86 [
+          inputs.disko.nixosModules.disko
+          ./hosts/sirocco
+        ];
         tramontane = mkSystemx86 [ ./hosts/tramontane ];
       };
     } // (flake-utils.lib.eachDefaultSystem (system:
