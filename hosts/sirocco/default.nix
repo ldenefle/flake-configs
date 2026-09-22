@@ -118,6 +118,41 @@ in {
     '';
   };
 
+  services.fail2ban = {
+    enable = true;
+    maxretry = 5;
+    bantime = "1h";
+    bantime-increment = {
+      enable = true;
+      multipliers = "1 2 4 8 16 32 64";
+      maxtime = "168h";
+      overalljails = true;
+    };
+    jails = {
+      sshd.settings = {
+        enabled = true;
+        maxretry = 3;
+      };
+      vaultwarden.settings = {
+        enabled = true;
+        port = "http,https";
+        filter = "vaultwarden";
+        backend = "systemd";
+        maxretry = 5;
+      };
+    };
+  };
+
+  environment.etc."fail2ban/filter.d/vaultwarden.conf".text = ''
+    [INCLUDES]
+    before = common.conf
+
+    [Definition]
+    failregex = ^.*Username or password is incorrect\. Try again\. IP: <HOST>\. Username:.*$
+    ignoreregex =
+    journalmatch = _SYSTEMD_UNIT=vaultwarden.service
+  '';
+
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [ 80 443 ];
